@@ -3,6 +3,9 @@
    SPA Router (Hash based) + Chart.js + Dropdowns + UI Interactions
    ============================================================ */
 
+window.addEventListener('hashchange', handleRoute);
+window.addEventListener('DOMContentLoaded', handleRoute);
+
 document.addEventListener('DOMContentLoaded', () => {
     initSPARouter();
     initSidebar();
@@ -22,37 +25,29 @@ const PAGE_TITLES = {
     settings: 'Настройки профиля',
 };
 
-function initSPARouter() {
-    const navItems = document.querySelectorAll('.nav-item[data-page]');
-    
-    navItems.forEach(item => {
-        item.querySelector('.nav-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            // Update the URL hash to trigger navigation via hashchange
-            window.location.hash = item.dataset.page;
-            // Close mobile sidebar if open
-            closeMobileSidebar();
-        });
-    });
-
-    // Listen to hash changes for Back/Forward browser navigation
-    window.addEventListener('hashchange', handleHashChange);
-
-    // Initial load: parse hash or set default
-    handleHashChange();
-}
-
-function handleHashChange() {
+function handleRoute() {
     let hash = window.location.hash.replace('#', '');
-    
-    // Fallback to overview if hash is empty or invalid
+
+    // Silent Default Route: internally treat empty hash as 'overview'
+    // DO NOT push history or replace state!
     if (!hash || !PAGE_TITLES[hash]) {
         hash = 'overview';
-        // Use history.replaceState so we don't add the empty hash to history
-        window.history.replaceState(null, '', '#' + hash);
     }
-    
+
     navigateTo(hash);
+}
+
+function initSPARouter() {
+    const navItems = document.querySelectorAll('.nav-item[data-page]');
+
+    navItems.forEach(item => {
+        const link = item.querySelector('.nav-link');
+        if (link) {
+            // Apply standard href attributes so native anchor clicks fire hashchange
+            link.setAttribute('href', '#' + item.dataset.page);
+            link.addEventListener('click', () => closeMobileSidebar());
+        }
+    });
 }
 
 function navigateTo(page) {
@@ -76,11 +71,11 @@ function navigateTo(page) {
     container.classList.remove('page-animate');
 
     switch (page) {
-        case 'overview':    container.innerHTML = renderOverview(); break;
-        case 'analytics':   container.innerHTML = renderAnalytics(); break;
-        case 'transactions':container.innerHTML = renderTransactions(); break;
-        case 'wallets':     container.innerHTML = renderWallets(); break;
-        case 'settings':    container.innerHTML = renderSettings(); break;
+        case 'overview': container.innerHTML = renderOverview(); break;
+        case 'analytics': container.innerHTML = renderAnalytics(); break;
+        case 'transactions': container.innerHTML = renderTransactions(); break;
+        case 'wallets': container.innerHTML = renderWallets(); break;
+        case 'settings': container.innerHTML = renderSettings(); break;
     }
 
     // Trigger transitions
@@ -92,7 +87,7 @@ function navigateTo(page) {
         if (page === 'overview') {
             initRevenueChart();
             initTrafficChart();
-            
+
             // Wire up "Смотреть все" button to use hash routing
             const viewAllBtn = container.querySelector('.table-view-all-btn');
             if (viewAllBtn) {
@@ -360,20 +355,20 @@ function renderSettings() {
    ============================================================ */
 
 const TRANSACTIONS_SHORT = [
-    { id: '#TR-1001', client: 'ООО «ТехПром»',    icon: 'ph-fill ph-buildings', date: '24 Окт 2023', amount: '$4,500',  status: 'success', statusText: 'Успешно' },
-    { id: '#TR-1002', client: 'ИП Смирнов А.',     icon: 'ph-fill ph-user',      date: '23 Окт 2023', amount: '$1,250',  status: 'success', statusText: 'Успешно' },
-    { id: '#TR-1003', client: 'Global Solutions',   icon: 'ph-fill ph-globe',     date: '23 Окт 2023', amount: '$8,900',  status: 'warning', statusText: 'В обработке' },
-    { id: '#TR-1004', client: 'WebStudio PRO',      icon: 'ph-fill ph-code',      date: '21 Окт 2023', amount: '$340',    status: 'danger',  statusText: 'Отклонено' },
+    { id: '#TR-1001', client: 'ООО «ТехПром»', icon: 'ph-fill ph-buildings', date: '24 Окт 2023', amount: '$4,500', status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1002', client: 'ИП Смирнов А.', icon: 'ph-fill ph-user', date: '23 Окт 2023', amount: '$1,250', status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1003', client: 'Global Solutions', icon: 'ph-fill ph-globe', date: '23 Окт 2023', amount: '$8,900', status: 'warning', statusText: 'В обработке' },
+    { id: '#TR-1004', client: 'WebStudio PRO', icon: 'ph-fill ph-code', date: '21 Окт 2023', amount: '$340', status: 'danger', statusText: 'Отклонено' },
 ];
 
 const TRANSACTIONS_FULL = [
     ...TRANSACTIONS_SHORT,
-    { id: '#TR-1005', client: 'Дизайн Лаб',        icon: 'ph-fill ph-palette',      date: '20 Окт 2023', amount: '$2,100',  status: 'success', statusText: 'Успешно' },
-    { id: '#TR-1006', client: 'ООО «МедиаГрупп»',  icon: 'ph-fill ph-television',   date: '19 Окт 2023', amount: '$6,340',  status: 'success', statusText: 'Успешно' },
-    { id: '#TR-1007', client: 'DataStream Inc.',    icon: 'ph-fill ph-database',     date: '18 Окт 2023', amount: '$11,200', status: 'warning', statusText: 'В обработке' },
-    { id: '#TR-1008', client: 'ИП Козлов Д.',       icon: 'ph-fill ph-user',         date: '17 Окт 2023', amount: '$780',    status: 'success', statusText: 'Успешно' },
-    { id: '#TR-1009', client: 'АО «ФинИнвест»',    icon: 'ph-fill ph-bank',         date: '16 Окт 2023', amount: '$15,900', status: 'danger',  statusText: 'Отклонено' },
-    { id: '#TR-1010', client: 'NetCode Studio',     icon: 'ph-fill ph-code',         date: '15 Окт 2023', amount: '$3,450',  status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1005', client: 'Дизайн Лаб', icon: 'ph-fill ph-palette', date: '20 Окт 2023', amount: '$2,100', status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1006', client: 'ООО «МедиаГрупп»', icon: 'ph-fill ph-television', date: '19 Окт 2023', amount: '$6,340', status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1007', client: 'DataStream Inc.', icon: 'ph-fill ph-database', date: '18 Окт 2023', amount: '$11,200', status: 'warning', statusText: 'В обработке' },
+    { id: '#TR-1008', client: 'ИП Козлов Д.', icon: 'ph-fill ph-user', date: '17 Окт 2023', amount: '$780', status: 'success', statusText: 'Успешно' },
+    { id: '#TR-1009', client: 'АО «ФинИнвест»', icon: 'ph-fill ph-bank', date: '16 Окт 2023', amount: '$15,900', status: 'danger', statusText: 'Отклонено' },
+    { id: '#TR-1010', client: 'NetCode Studio', icon: 'ph-fill ph-code', date: '15 Окт 2023', amount: '$3,450', status: 'success', statusText: 'Успешно' },
 ];
 
 function buildTransactionRows(data) {
