@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinDash — современная финтех-аналитическая панель для мониторинга выручки, пользователей и транзакций.">
+    <title>FinDash — Аналитика платформы</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon"><i class="ph ph-chart-line-up"></i></span>
+                <span class="logo-text">FinDash<span class="logo-dot">.</span></span>
+            </div>
+            <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Закрыть меню">
+                <i class="ph ph-x"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <a href="#" class="nav-link">
+                        <i class="ph ph-squares-four"></i>
+                        <span>Обзор</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="ph ph-chart-bar"></i>
+                        <span>Аналитика</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="ph ph-arrows-left-right"></i>
+                        <span>Транзакции</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="ph ph-wallet"></i>
+                        <span>Кошельки</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="ph ph-gear"></i>
+                        <span>Настройки</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    <i class="ph-fill ph-user"></i>
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Алексей С.</span>
+                    <span class="user-role">Администратор</span>
+                </div>
+                <button class="user-menu-btn" aria-label="Меню пользователя">
+                    <i class="ph ph-dots-three"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+
+        <!-- Top Header -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="hamburger-btn" id="hamburgerBtn" aria-label="Открыть меню">
+                    <i class="ph ph-list"></i>
+                </button>
+                <h1 class="page-title">Аналитика платформы</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box" id="searchBox">
+                    <i class="ph ph-magnifying-glass search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Поиск по транзакциям...">
+                </div>
+                <button class="notification-btn" id="notificationBtn" aria-label="Уведомления">
+                    <i class="ph ph-bell"></i>
+                    <span class="notification-badge"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid" aria-label="Статистика">
+            <div class="stat-card" id="statRevenue">
+                <div class="stat-header">
+                    <span class="stat-title">Общая выручка</span>
+                    <span class="stat-icon icon-revenue"><i class="ph ph-currency-dollar"></i></span>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-value">$124,500.00</span>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-badge badge-success">
+                        <i class="ph ph-trend-up"></i> +12.5%
+                    </span>
+                    <span class="stat-period">за месяц</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statUsers">
+                <div class="stat-header">
+                    <span class="stat-title">Активные пользователи</span>
+                    <span class="stat-icon icon-users"><i class="ph ph-users"></i></span>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-value">8,240</span>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-badge badge-success">
+                        <i class="ph ph-trend-up"></i> +3.1%
+                    </span>
+                    <span class="stat-period">за месяц</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statRegistrations">
+                <div class="stat-header">
+                    <span class="stat-title">Новые регистрации</span>
+                    <span class="stat-icon icon-registrations"><i class="ph ph-user-plus"></i></span>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-value">342</span>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-badge badge-danger">
+                        <i class="ph ph-trend-down"></i> -1.2%
+                    </span>
+                    <span class="stat-period">за месяц</span>
+                </div>
+            </div>
+
+            <div class="stat-card" id="statConversion">
+                <div class="stat-header">
+                    <span class="stat-title">Конверсия</span>
+                    <span class="stat-icon icon-conversion"><i class="ph ph-percent"></i></span>
+                </div>
+                <div class="stat-body">
+                    <span class="stat-value">4.6%</span>
+                </div>
+                <div class="stat-footer">
+                    <span class="stat-badge badge-success">
+                        <i class="ph ph-trend-up"></i> +0.4%
+                    </span>
+                    <span class="stat-period">за месяц</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="charts-grid" aria-label="Графики">
+            <div class="chart-card chart-card-large" id="revenueChartCard">
+                <div class="chart-header">
+                    <h2 class="chart-title">Выручка за полугодие</h2>
+                    <div class="chart-actions">
+                        <button class="chart-action-btn active">6 мес</button>
+                        <button class="chart-action-btn">1 год</button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card chart-card-small" id="trafficChartCard">
+                <div class="chart-header">
+                    <h2 class="chart-title">Источники трафика</h2>
+                </div>
+                <div class="chart-body chart-body-doughnut">
+                    <canvas id="trafficChart"></canvas>
+                </div>
+                <div class="doughnut-legend" id="doughnutLegend"></div>
+            </div>
+        </section>
+
+        <!-- Table Section -->
+        <section class="table-section" aria-label="Последние транзакции">
+            <div class="table-header">
+                <h2 class="table-title">Последние транзакции</h2>
+                <button class="table-view-all-btn">Смотреть все <i class="ph ph-arrow-right"></i></button>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Клиент</th>
+                            <th>Дата</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="cell-id">#TR-1001</td>
+                            <td class="cell-client">
+                                <div class="client-info">
+                                    <span class="client-avatar"><i class="ph-fill ph-buildings"></i></span>
+                                    <span>ООО &laquo;ТехПром&raquo;</span>
+                                </div>
+                            </td>
+                            <td class="cell-date">24 Окт 2023</td>
+                            <td class="cell-amount">$4,500</td>
+                            <td class="cell-status"><span class="status-badge status-success">Успешно</span></td>
+                        </tr>
+                        <tr>
+                            <td class="cell-id">#TR-1002</td>
+                            <td class="cell-client">
+                                <div class="client-info">
+                                    <span class="client-avatar"><i class="ph-fill ph-user"></i></span>
+                                    <span>ИП Смирнов А.</span>
+                                </div>
+                            </td>
+                            <td class="cell-date">23 Окт 2023</td>
+                            <td class="cell-amount">$1,250</td>
+                            <td class="cell-status"><span class="status-badge status-success">Успешно</span></td>
+                        </tr>
+                        <tr>
+                            <td class="cell-id">#TR-1003</td>
+                            <td class="cell-client">
+                                <div class="client-info">
+                                    <span class="client-avatar"><i class="ph-fill ph-globe"></i></span>
+                                    <span>Global Solutions</span>
+                                </div>
+                            </td>
+                            <td class="cell-date">23 Окт 2023</td>
+                            <td class="cell-amount">$8,900</td>
+                            <td class="cell-status"><span class="status-badge status-warning">В обработке</span></td>
+                        </tr>
+                        <tr>
+                            <td class="cell-id">#TR-1004</td>
+                            <td class="cell-client">
+                                <div class="client-info">
+                                    <span class="client-avatar"><i class="ph-fill ph-code"></i></span>
+                                    <span>WebStudio PRO</span>
+                                </div>
+                            </td>
+                            <td class="cell-date">21 Окт 2023</td>
+                            <td class="cell-amount">$340</td>
+                            <td class="cell-status"><span class="status-badge status-danger">Отклонено</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
