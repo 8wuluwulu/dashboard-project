@@ -1,6 +1,6 @@
 /* ============================================================
    FinDash — script.js
-   SPA Router + Chart.js + Dropdowns + UI Interactions
+   SPA Router (Hash based) + Chart.js + Dropdowns + UI Interactions
    ============================================================ */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ============================================================
-   SPA ROUTER — Page Navigation
+   SPA ROUTER (Hash Routing)
    ============================================================ */
 
 const PAGE_TITLES = {
@@ -24,21 +24,39 @@ const PAGE_TITLES = {
 
 function initSPARouter() {
     const navItems = document.querySelectorAll('.nav-item[data-page]');
+    
     navItems.forEach(item => {
         item.querySelector('.nav-link').addEventListener('click', (e) => {
             e.preventDefault();
-            navigateTo(item.dataset.page);
-            // Close mobile sidebar
+            // Update the URL hash to trigger navigation via hashchange
+            window.location.hash = item.dataset.page;
+            // Close mobile sidebar if open
             closeMobileSidebar();
         });
     });
 
-    // Initial render
-    navigateTo('overview');
+    // Listen to hash changes for Back/Forward browser navigation
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Initial load: parse hash or set default
+    handleHashChange();
+}
+
+function handleHashChange() {
+    let hash = window.location.hash.replace('#', '');
+    
+    // Fallback to overview if hash is empty or invalid
+    if (!hash || !PAGE_TITLES[hash]) {
+        hash = 'overview';
+        // Use history.replaceState so we don't add the empty hash to history
+        window.history.replaceState(null, '', '#' + hash);
+    }
+    
+    navigateTo(hash);
 }
 
 function navigateTo(page) {
-    // Update active nav
+    // Update active nav link
     document.querySelectorAll('.nav-item[data-page]').forEach(item => {
         item.classList.toggle('active', item.dataset.page === page);
     });
@@ -65,27 +83,27 @@ function navigateTo(page) {
         case 'settings':    container.innerHTML = renderSettings(); break;
     }
 
-    // Trigger animations
+    // Trigger transitions
     void container.offsetWidth; // reflow
     container.classList.add('page-animate');
 
-    // Initialize charts if needed
+    // Initialize scripts based on current page
     requestAnimationFrame(() => {
         if (page === 'overview') {
             initRevenueChart();
             initTrafficChart();
+            
+            // Wire up "Смотреть все" button to use hash routing
+            const viewAllBtn = container.querySelector('.table-view-all-btn');
+            if (viewAllBtn) {
+                viewAllBtn.addEventListener('click', () => {
+                    window.location.hash = 'transactions';
+                });
+            }
         }
         if (page === 'analytics') {
             initTrafficBarChart();
         }
-        // Wire up "Смотреть все" button on overview
-        if (page === 'overview') {
-            const viewAllBtn = container.querySelector('.table-view-all-btn');
-            if (viewAllBtn) {
-                viewAllBtn.addEventListener('click', () => navigateTo('transactions'));
-            }
-        }
-        // Wire up settings toggle & save
         if (page === 'settings') {
             initSettingsInteractions();
         }
